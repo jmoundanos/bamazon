@@ -21,7 +21,8 @@ var connection = mysql.createConnection({
 
 function showOptions(){
     inquirer
-        .prompt({
+    .prompt([
+        {
             name: "action",
             type: "list",
             message: "What do you need to do?",
@@ -31,8 +32,9 @@ function showOptions(){
                 "Add to Inventory",
                 "Add New Product"
             ]
-        })
-        .then(function(answer){
+        }
+    ])
+    .then(function(answer){
             switch(answer.action){
                 case "View Products For Sale":
                     viewProducts();
@@ -46,17 +48,22 @@ function showOptions(){
                 case "Add New Product":
                     addNewProduct();
                     break;
+                case "Exit":
+                    connection.end();
             }
         });
 }
 function viewProducts(){
-    var query = "SELECT * FROM products";
+    console.log("Go here");
+    connection.end();
+    /*var query = "SELECT * FROM products";
+    var table = new Table({
+        head: ["Item ID", "Product Name", "Price", "Quantity"],
+        colWidths: [10, 25, 6, 5]
+    });
     connection.query(query, function(err, res){
         if(err) throw err;
-        var table = new Table({
-            head: ["Item ID", "Product Name", "Price", "Quantity"],
-            colWidths: [10, 25, 6, 5]
-        });
+       
         for(var i = 0; i < res.length; i++){
             var itemId = res[i].item_id,
             productName = res[i].product_name,
@@ -67,7 +74,7 @@ function viewProducts(){
           [itemId, productName, price, stockQuantity]);
         }
         console.log(table.toString());
-    });
-    //showOptions();
+        showOptions();
+    });*/
+    
 }
-//connection.end();
