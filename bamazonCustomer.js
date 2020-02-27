@@ -91,6 +91,7 @@ function fulfillOrder(newStockAmount, itemPurchased, totalCost){
         console.log("Database updated");
         console.log("The total cost of your order is $" + totalCost);
 
-    })    
+    })  
+    connection.end();  
 }
     
