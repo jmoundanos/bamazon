@@ -22,7 +22,7 @@ var connection = mysql.createConnection({
 function showOptions(){
     inquirer
     .prompt([
-        {
+            {   
             name: "action",
             type: "list",
             message: "What do you need to do?",
@@ -30,36 +30,36 @@ function showOptions(){
                 "View Products for Sale",
                 "View Low Inventory",
                 "Add to Inventory",
-                "Add New Product"
+                "Add New Product",
+                "Exit"
             ]
-        }
-    ])
+        },
+        ])
     .then(function(answer){
-            switch(answer.action){
-                case "View Products For Sale":
-                    viewProducts();
-                    break;
-                case "View Low Inventory":
-                    viewLowInventory();
-                    break;
-                case "Add to Inventory":
-                    addInventory();
-                    break;
-                case "Add New Product":
-                    addNewProduct();
-                    break;
-                case "Exit":
-                    connection.end();
+        switch(answer.action){
+        case "View Products for Sale":
+            viewProducts();
+            break;
+        case "View Low Inventory":
+            viewLowInventory();
+            break;
+        case "Add to Inventory":
+            addInventory();
+            break;
+        case "Add New Product":
+            addNewProduct();
+            break;
+        case "Exit":
+            connection.end();
             }
         });
 }
 function viewProducts(){
-    console.log("Go here");
-    connection.end();
-    /*var query = "SELECT * FROM products";
+    
+    var query = "SELECT * FROM products";
     var table = new Table({
         head: ["Item ID", "Product Name", "Price", "Quantity"],
-        colWidths: [10, 25, 6, 5]
+        colWidths: [10, 25, 10, 10]
     });
     connection.query(query, function(err, res){
         if(err) throw err;
@@ -73,8 +73,53 @@ function viewProducts(){
       table.push(
           [itemId, productName, price, stockQuantity]);
         }
+        console.log("");
         console.log(table.toString());
         showOptions();
-    });*/
+    });
     
+}
+function viewLowInventory(){
+   
+    var query = "SELECT * FROM products";
+    connection.query(query, function(err, res){
+        if(err) throw err;
+        for(var i = 0; i < res.length; i++){
+            if(res[i].stock_quantity < 5){
+                console.log(res[i].product_name +" are almost out of stock!");
+            }
+        }
+    showOptions();
+    });
+}
+function addInventory(){
+    inquirer
+    .prompt([
+        {   
+        name: "item",
+        type: "input",
+        message: "Which item would you like to add more of?"
+    },
+    {
+        name: "quantity",
+        type: "input",
+        message: "How many would you like to add?",
+        validate: function(value){
+            if(isNaN(value) === false){
+                return true;
+            }
+            return false;
+        }
+    }
+    ]).then(function(answer){
+    
+    var query = "UPDATE products SET ? WHERE ?";
+    connection.query(query, function(err, res){
+        if(err) throw err;
+    showOptions();
+    });
+}
+function addNewProduct(){
+    console.log("add product");
+    showOptions();
 }

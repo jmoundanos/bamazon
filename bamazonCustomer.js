@@ -24,7 +24,7 @@ var showAllProducts = function(){
         if(err) throw err;
         var table = new Table({
             head: ["Item ID", "Product Name", "Department", "Price", "Quantity"],
-            colWidths: [10, 25, 20, 6, 5]
+            colWidths: [10, 25, 25, 10, 10]
         });
         for(var i = 0; i < res.length; i++){
             var itemId = res[i].item_id,
@@ -32,7 +32,7 @@ var showAllProducts = function(){
             departmentName = res[i].department_name,
             price = res[i].price,
             stockQuantity = res[i].stock_quantity;
-
+           
       table.push(
           [itemId, productName, departmentName, price, stockQuantity]);
         }
