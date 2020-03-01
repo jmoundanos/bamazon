@@ -98,7 +98,7 @@ function addInventory(){
         {   
         name: "item",
         type: "input",
-        message: "Which item would you like to add more of?"
+        message: "What is the item id for the product would you like to add more of?"
     },
     {
         name: "quantity",
@@ -112,14 +112,59 @@ function addInventory(){
         }
     }
     ]).then(function(answer){
-    
-    var query = "UPDATE products SET ? WHERE ?";
-    connection.query(query, function(err, res){
-        if(err) throw err;
-    showOptions();
-    });
-}
+        connection.query("SELECT * FROM products WHERE item_id =" +answer.item, function(err, res){
+            if(err) throw err;
+            connection.query('UPDATE products SET stock_quantity = stock_quantity +' +answer.quantity +' WHERE item_id = ' + answer.item + '', function(err, res){
+                if(err) throw err;
+                console.log(answer.item + " has been updated")
+                showOptions();
+    })
+})
+    })
+}  
 function addNewProduct(){
     console.log("add product");
-    showOptions();
+    inquirer
+    .prompt([
+        {   
+        name: "name",
+        type: "input",
+        message: "What is the name of the product you would like to add?"
+    },
+    {
+        name: "department",
+        type: "input",
+        message: "Which department should the product go in?"
+    },
+    {
+        name: "price",
+        type: "input",
+        message: "What is the price of the product?",
+        validate: function(value){
+            if(isNaN(value) === false){
+                return true;
+            }
+            return false;
+        }
+    },
+    {
+        name: "quantity",
+        type: "input",
+        message: "How many would you like to add?",
+        validate: function(value){
+            if(isNaN(value) === false){
+                return true;
+            }
+            return false;
+        }
+    }
+    ]).then(function(answer){
+        var name = answer.name;
+        connection.query("INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES("+ name + "," + answer.department + "," + answer.price +"," +answer.quantity+")", function(err, res){
+            if(err) throw err;
+            console.log(answer.name + " has been added");
+            showOptions();
+        }) 
+    })
+   
 }
