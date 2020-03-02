@@ -58,8 +58,8 @@ function viewProducts(){
     
     var query = "SELECT * FROM products";
     var table = new Table({
-        head: ["Item ID", "Product Name", "Price", "Quantity"],
-        colWidths: [10, 25, 10, 10]
+        head: ["Item ID", "Product Name", "Department","Price", "Quantity"],
+        colWidths: [10, 25, 25, 10, 10]
     });
     connection.query(query, function(err, res){
         if(err) throw err;
@@ -67,11 +67,12 @@ function viewProducts(){
         for(var i = 0; i < res.length; i++){
             var itemId = res[i].item_id,
             productName = res[i].product_name,
+            department = res[i].department_name,
             price = res[i].price,
             stockQuantity = res[i].stock_quantity;
 
       table.push(
-          [itemId, productName, price, stockQuantity]);
+          [itemId, productName, department, price, stockQuantity]);
         }
         console.log("");
         console.log(table.toString());
@@ -160,7 +161,8 @@ function addNewProduct(){
     }
     ]).then(function(answer){
         var name = answer.name;
-        connection.query("INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES("+ name + "," + answer.department + "," + answer.price +"," +answer.quantity+")", function(err, res){
+        var query = ("INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES("+"'" +name+ "'"+","+"'" +answer.department+ "'"+","+ +answer.price+ "," +answer.quantity+")");
+        connection.query(query, function(err, res){
             if(err) throw err;
             console.log(answer.name + " has been added");
             showOptions();
